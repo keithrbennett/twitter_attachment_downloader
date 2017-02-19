@@ -12,7 +12,6 @@ require_relative '../lib/twitter_attachment_downloader/downloader'
 require_relative '../lib/twitter_attachment_downloader/exit_codes'
 
 
-
 # ========================
 begin
     Downloader.new(Options.from_command_line).call
