@@ -4,6 +4,7 @@ require 'optparse'
 
 class Options < Struct.new(:archive_root_dir, :include_retweets)
 
+  # Creates an instance from the command line options
   def self.from_command_line
 
     option_parser = nil
@@ -30,12 +31,13 @@ class Options < Struct.new(:archive_root_dir, :include_retweets)
       end
 
     end.parse!
+
+    if options.archive_root_dir.nil?
+      puts "Archive root directory not specified. Assuming current directory."
+      self.archive_root_dir = Dir.getwd
+    end
+
     options
-  end
-
-
-  def archive_root_dir
-    @archive_root_dir ||= '.'
   end
 
 

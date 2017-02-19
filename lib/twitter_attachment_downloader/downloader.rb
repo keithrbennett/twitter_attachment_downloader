@@ -38,7 +38,7 @@ class Downloader
       exit(ExitCodes.for(:archive_root_dir_missing))
     end
     unless File.exist?(options.tweet_index_filespec)
-      puts "Could not find tweet master index at #{options.tweet_index_filespec}." +
+      puts "Could not find tweet master index at #{options.tweet_index_filespec}. " +
                "It should contain the index.html file."
       exit(ExitCodes.for(:tweet_master_index_missing))
     end
