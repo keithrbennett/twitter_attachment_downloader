@@ -130,12 +130,12 @@ class Downloader
     # Download the original/best image size, rather than the default one
     media_url_original_resolution = media_url + ':orig'
 
-    local_filename = File.join(options.tweet_dir,
+    local_filename = File.join(options.tweet_dirspec,
                                "%s_media" % (year_month_str(date)),
                                "%s-%s-%s%d%s" % [
                                    date_str,
                                    tweet['id'],
-                                   retweet(tweet) ? 'rt-' : '',
+                                   retweet?(tweet) ? 'rt-' : '',
                                    tweet_image_num,
                                    extension
                                ]
@@ -233,9 +233,8 @@ class Downloader
       stdout_print(
           "%s: %4i tweets processed, %4i images downloaded.\n" \
           % [year_month_display_str, tweet_count_to_process, image_count_downloaded_for_month])
-
-      image_count_downloaded_for_month
     end
+    image_count_downloaded_for_month
   end
 
 
