@@ -5,19 +5,12 @@ require 'fileutils'
 require 'json'
 
 require_relative 'options'
+require_relative 'exit_codes'
 
 
 class Downloader
 
   attr_accessor :options
-
-  EXIT_CODES = {
-      'ARCHIVE_ROOT_DIR_MISSING'   => -1,
-      'TWEET_MASTER_INDEX_MISSING' => -2,
-      'DOWNLOAD_FAILED'            => -3,
-      'INDEX_FILE_MISSING'         => -4,
-      'KEYBOARD_INTERRUPT'         => -5,
-  }
 
   def initialize(options)
     self.options = options
@@ -42,12 +35,12 @@ class Downloader
     archive_root_dir = options.archive_root_dir
     unless Dir.exist?(archive_root_dir)
       puts "Could not find archive directory #{archive_root_dir}!"
-      exit(EXIT_CODES['ARCHIVE_ROOT_DIR_MISSING'])
+      exit(ExitCodes.for(:archive_root_dir_missing))
     end
     unless File.exist?(options.tweet_index_filespec)
       puts "Could not find tweet master index at #{options.tweet_index_filespec}." +
                "It should contain the index.html file."
-      exit(EXIT_CODES['TWEET_MASTER_INDEX_MISSING'])
+      exit(ExitCodes.for(:tweet_master_index_missing))
     end
   end
 

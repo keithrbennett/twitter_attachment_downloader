@@ -9,6 +9,7 @@ at https://github.com/mwichary/twitter-export-image-fill
 =end
 
 require_relative '../lib/twitter_attachment_downloader/downloader'
+require_relative '../lib/twitter_attachment_downloader/exit_codes'
 
 
 
@@ -17,8 +18,8 @@ begin
     Downloader.new(Options.from_command_line).call
 # Nicer support for Ctrl-C:
 rescue Interrupt
-  puts "Execution terminated at your request.  Come back any time."
-  exit(error_codes['KEYBOARD_INTERRUPT'])
+  puts "\nExecution terminated at your request.  Come back any time.\n\n"
+  exit(ExitCodes.for(:keyboard_interrupt))
 end
 
 # ========================
