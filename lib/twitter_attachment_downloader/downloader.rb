@@ -83,8 +83,10 @@ class Downloader
     # but save for later since we have to recreate the file.
 
     first_data_line = lines.first.dup
-    lines.first.gsub!(/Grailbird.data.tweets_(.*) =/, '')
-    data = JSON.parse(lines.join("\n"))
+    lines.first.gsub!(%r{Grailbird.data.tweets_(.*) =(.?)\[}, '')
+    json_string = lines.join("\n")
+    data = JSON.parse(json_string)
+
     [data, first_data_line]
   end
 
@@ -185,7 +187,7 @@ class Downloader
     # (only first 19 characters)
     date_str = reformat_date_string_for_filename(tweet['created_at'][0..19])
 
-    Dir.mkdir_p(media_directory_name)
+    FileUtils.mkdir_p(media_directory_name)
 
     media_to_download.each do |media|
       process_tweet_image(tweet, media, date, date_str, tweet_image_num, tweet_num, tweet_count_to_process)
@@ -212,7 +214,7 @@ class Downloader
 
     tweets_to_process = tweets_this_month
 
-    if not args.include_retweets
+    unless options.include_retweets
       tweets_to_process.reject! { |tweet| retweet?(tweet) }
     end
 
@@ -246,7 +248,7 @@ class Downloader
     tweets_by_month = read_index
 
     puts "To process: #{tweets_by_month.size} months worth of tweets..."
-    puts "(You can cancel any time. Next time you run, the script should resume at the last point.)\n"
+    puts "(You can cancel any time. Next time you run, the script should resume at the last point.)\n\n"
 
     total_image_count = 0
     tweets_by_month.each do |month|
@@ -254,4 +256,5 @@ class Downloader
       puts "\nDone!\n#{total_image_count} images downloaded in total.\n\n"
     end
   end
+
 end
