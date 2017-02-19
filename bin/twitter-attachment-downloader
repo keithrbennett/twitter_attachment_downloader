@@ -1,12 +1,17 @@
 #!/usr/bin/env ruby
 
-=begin
-Twitter Attachment Downloader
+# Twitter Attachment Downloader
+#
+# Twitter offers an archive of users' tweets, but this archive does not contain
+# the attachments (such as photos).
+#
+# This script downloads the files and modifies the HTML and JavaScript so that
+# when the archive is opened in a browser, the files are retrieved locally
+# instead of from Twitter servers.
 
-based on Twitter export image fill 1.02
-by Marcin Wichary (aresluna.org)
-at https://github.com/mwichary/twitter-export-image-fill
-=end
+# Much/most of the logic has been copied from the Python script
+# "Twitter export image fill 1.02" by Marcin Wichary (aresluna.org)
+# at https://github.com/mwichary/twitter-export-image-fill
 
 require_relative '../lib/twitter_attachment_downloader/downloader'
 require_relative '../lib/twitter_attachment_downloader/exit_codes'
