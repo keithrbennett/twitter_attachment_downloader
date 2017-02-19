@@ -83,7 +83,7 @@ class Downloader
     # but save for later since we have to recreate the file.
 
     first_data_line = lines.first.dup
-    lines.first.gsub!(%r{Grailbird.data.tweets_(.*) =(.?)\[}, '')
+    lines.first.gsub!(%r{Grailbird.data.tweets_(.*) =}, '')
     json_string = lines.join("\n")
     data = JSON.parse(json_string)
 
@@ -145,12 +145,11 @@ class Downloader
 
 
   def rewrite_js_file(data_filespec, first_data_line, tweets_this_month)
-
-    File.open(data_filespec, 'w') do |file|
-      file << first_data_line
-      file << tweets_this_month.to_json
-    end
+    new_json_text = '' << first_data_line << tweets_this_month.to_json
+    File.write(data_filespec, new_json_text)
+    puts 'Rewrote '  + data_filespec
   end
+
 
 
   def process_tweet_image(tweet, media, date, date_str, tweet_image_num, tweet_num, tweet_count_to_process)
@@ -201,11 +200,10 @@ class Downloader
   def process_month(date)
 
     year_month_display_str = "%04d/%02d" % [date['year'], date['month']]
-
     data_filename, backup_filename, media_directory_name = create_filenames(date)
 
     unless File.file?(backup_filename)
-      copyfile(data_filename, backup_filename)
+      FileUtils.cp(data_filename, backup_filename)
     end
 
     tweets_this_month, first_data_line = read_month_data_file(data_filename)
@@ -224,16 +222,16 @@ class Downloader
     tweets_to_process.each_with_index do |tweet, tweet_num|
       image_count_downloaded_for_month += \
           process_tweet(tweet, tweet_num, media_directory_name, date, tweet_count_to_process)
-
-      # Rewrite the original JSON file so that the archive's index.html
-      # will now point to local files... and also so that the script can
-      # continue from last point.
-      rewrite_js_file(data_filename, first_data_line, tweets_this_month)
-
-      stdout_print(
-          "%s: %4i tweets processed, %4i images downloaded.\n" \
-          % [year_month_display_str, tweet_count_to_process, image_count_downloaded_for_month])
     end
+
+    # Rewrite the original JSON file so that the archive's index.html
+    # will now point to local files... and also so that the script can
+    # continue from last point.
+    rewrite_js_file(data_filename, first_data_line, tweets_this_month)
+
+    stdout_print(
+        "%s: %4i tweets processed, %4i images downloaded.\n" \
+        % [year_month_display_str, tweet_count_to_process, image_count_downloaded_for_month])
     image_count_downloaded_for_month
   end
 
@@ -251,9 +249,10 @@ class Downloader
 
     total_image_count = 0
     tweets_by_month.each do |month|
+      puts "\nProcessing month #{month}...\n\n"
       total_image_count += process_month(month)
-      puts "\nDone!\n#{total_image_count} images downloaded in total.\n\n"
     end
+    puts "\nDone!\n#{total_image_count} images downloaded in total.\n\n"
   end
 
 end
