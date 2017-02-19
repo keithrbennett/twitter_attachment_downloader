@@ -2,9 +2,7 @@
 
 require 'optparse'
 
-class Options
-
-  attr_writer :archive_root_dir, :include_retweets
+class Options < Struct.new(:archive_root_dir, :include_retweets)
 
   def self.from_command_line
 

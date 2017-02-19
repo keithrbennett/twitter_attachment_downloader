@@ -1,5 +1,6 @@
 # Downloads attachments to Twitter messages in an archive.
 
+require 'awesome_print'
 require 'fileutils'
 require 'json'
 
@@ -245,6 +246,9 @@ class Downloader
 
 
   def call
+    puts "Processing download of Twitter archive attachments with the following options:"
+    ap options.to_h
+
     validate_archive_dir
     tweets_by_month = read_index
 
